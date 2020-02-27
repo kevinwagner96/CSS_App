@@ -66,7 +66,7 @@ class HomeFragment : Fragment() {
 
 
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.6:45455/api/")
+            .baseUrl(R.string.api_url.toString())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
