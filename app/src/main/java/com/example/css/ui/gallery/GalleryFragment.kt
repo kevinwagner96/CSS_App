@@ -1,9 +1,14 @@
 package com.example.css.ui.gallery
 
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -12,15 +17,21 @@ import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
 import com.example.css.R
 import com.example.css.helpers.Compartir
+import kotlinx.android.synthetic.main.fragment_gallery.*
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
+import java.lang.Exception
 import java.util.*
+import java.util.jar.Manifest
 import kotlin.collections.ArrayList
 
 
@@ -57,8 +68,8 @@ class GalleryFragment : Fragment() {
         })
 
         button.setOnClickListener {
-
-            Compartir.bitmap(this.requireContext(),getWholeListViewItemsToBitmap(listaFactura))
+           val path = getWholeListViewItemsToBitmap(facturaList)?.let { it1 -> saveImageToStorage(it1) }
+            Compartir.bitmap(this.requireContext(), path.toString())
         }
 
         return root
@@ -100,59 +111,37 @@ class GalleryFragment : Fragment() {
         }
         return bigbitmap
     }
-/*
-    private fun saveToInternalStorage(bitmapImage: Bitmap): String? {
 
+    fun getPermission(){
+        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.M){
+            if(ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
+                ActivityCompat.requestPermissions(this.requireActivity(), arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),100)
 
-        val cw = ContextWrapper(context)
-        // path to /data/data/yourapp/app_data/imageDir
-        //val storageDir = getExternalFileDir(Environment.DIRECTORY_PICTURES)
-        // Create imageDir
+        }
+    }
 
-        val mypath = File(directory, "" +
-                "profile.jpg")
-        var fos: FileOutputStream? = null
-        try {
-            fos = FileOutputStream(mypath)
+    fun saveImageToStorage(bitmap: Bitmap):String{
+        getPermission()
 
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            try {
-                fos?.close()
-            } catch (e: IOException) {
+        var externalStorageStats= Environment.getExternalStorageState()
+        if(externalStorageStats.equals(Environment.MEDIA_MOUNTED)){
+            val storageDirectory = Environment.getExternalStorageDirectory().toString()
+            val file = File(storageDirectory,"test_image.jpg")
+            try{
+                val stream: OutputStream = FileOutputStream(file)
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
+                stream.flush()
+                stream.close()
+                Toast.makeText(context,"Path:"+ Uri.parse(file.absolutePath),Toast.LENGTH_SHORT).show()
+            }catch (e : Exception){
                 e.printStackTrace()
             }
-        }
-        Toast.makeText(context,mypath.absolutePath, Toast.LENGTH_LONG).show()
+            return file.absolutePath
 
-        return "hola"
-    }
-*/
-    private fun saveImage(finalBitmap: Bitmap) {
-
-        val root = Environment.getExternalStorageDirectory().toString()
-        val myDir = File(root + "/capture_photo")
-        myDir.mkdirs()
-        val generator = Random()
-        var n = 10000
-        n = generator.nextInt(n)
-        val OutletFname = "Image-$n.jpg"
-        val file = File(myDir, OutletFname)
-        if (file.exists()) file.delete()
-        try {
-            val out = FileOutputStream(file)
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
-            imagePath = file.absolutePath
-            out.flush()
-            out.close()
-
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-
+        }else{
+            Toast.makeText(context,"No se puede acceder a almacenamiento",Toast.LENGTH_SHORT).show()
         }
 
+        return ""
     }
 }

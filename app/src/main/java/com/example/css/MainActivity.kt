@@ -1,6 +1,13 @@
 package com.example.css
 
+import android.app.Activity
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import androidx.navigation.findNavController
@@ -15,8 +22,15 @@ import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.css.helpers.Compartir
 import com.example.css.model.Factura
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
+import java.lang.Exception
+import java.util.jar.Manifest
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,9 +67,21 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
        // if(item.itemId == R.id.action_compartir)
             //Compartir.bitmap(this)
+        /*
+        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.M){
+            if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),100)
+            }else{
+                saveImageToStorage();
+            }
+        }else{
+            saveImageToStorage()
+        }   */
 
         return super.onOptionsItemSelected(item)
     }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
