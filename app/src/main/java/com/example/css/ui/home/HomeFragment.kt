@@ -38,10 +38,6 @@ import java.math.RoundingMode
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
-
-
-    val TAG_LOGS = "kikopalomares"
-
     lateinit var service: ApiService
 
     override fun onCreateView(
@@ -79,7 +75,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-                Log.i(TAG_LOGS, query )
+
                 if(!switch.isChecked)
                     searchByDescripcion(query);
                 else {
@@ -108,7 +104,7 @@ class HomeFragment : Fragment() {
         })
 
         listView.setOnItemClickListener {parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-            showFilterDialog(homeViewModel.getProducto(position))
+            showAddCarDialog(homeViewModel.getProducto(position))
 
         }
 
@@ -119,7 +115,7 @@ class HomeFragment : Fragment() {
 
 
 
-    fun showFilterDialog(producto: Producto){
+    private fun showAddCarDialog(producto: Producto){
         val builder = android.app.AlertDialog.Builder(activity)
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.layout_add_to_car,null)
@@ -157,7 +153,7 @@ class HomeFragment : Fragment() {
                     Toast.makeText(this.context, "Agergado", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(this.context, "Ingrese una cantidad", Toast.LENGTH_SHORT).show()
-                    showFilterDialog(producto)
+                    showAddCarDialog(producto)
                 }
 
             }
@@ -188,13 +184,7 @@ class HomeFragment : Fragment() {
         service.searchByDescripcion(desc).enqueue(object: Callback<BusquedaResponse> {
             override fun onResponse(call: Call<BusquedaResponse>?, response: Response<BusquedaResponse>?) {
                 var posts = response?.body()
-                Log.i(TAG_LOGS, Gson().toJson(posts))
-                /*
-                var list : ArrayList<String> = ArrayList()
-                posts?.Value?.forEach{
-                    list.add(it.descripcion)
-                }
-                */
+
                 homeViewModel.setProductList(posts?.Value!!)
 
             }
@@ -212,7 +202,7 @@ class HomeFragment : Fragment() {
             override fun onResponse(call: Call<ProductoResponse>?, response: Response<ProductoResponse>?) {
                 post = response?.body()
                 if(post?.Value!=null)
-                    showFilterDialog(post?.Value!!)
+                    showAddCarDialog(post?.Value!!)
                 else
                     Toast.makeText(context,"El producto no existe :(",Toast.LENGTH_SHORT).show()
             }
@@ -221,20 +211,6 @@ class HomeFragment : Fragment() {
             }
         })
     }
-/*
-    fun editPost(){
-        var post: Producto? = Producto(1, 1, "Hello k", "body")
-        //Editamos los datos por POST
-        service.editPostById(1, post).enqueue(object: Callback<Producto>{
-            override fun onResponse(call: Call<Post>?, response: Response<Post>?) {
-                post = response?.body()
-                Log.i(TAG_LOGS, Gson().toJson(post))
-            }
-            override fun onFailure(call: Call<Post>?, t: Throwable?) {
-                t?.printStackTrace()
-            }
-        })
-    }
-    */
+
 
 }

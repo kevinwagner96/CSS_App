@@ -16,4 +16,11 @@
     <string name="menu_send">Send</string>
 
     <string name="api_url">http://192.168.0.6:45455/api/</string>
+
+    <string name="image_name">presupuesto.jpg</string>
+
+
+    <string name="toast_storage_problem">No se puede acceder al almacenamiento</string>
+    <string name="other">No se puede acceder al almacenamiento</string>
+
 </resources>

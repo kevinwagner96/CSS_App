@@ -1,12 +1,12 @@
 package com.example.css.ui.gallery
 
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.BitmapDrawable
+
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -30,16 +30,14 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 import java.lang.Exception
-import java.util.*
-import java.util.jar.Manifest
 import kotlin.collections.ArrayList
 
 
 class GalleryFragment : Fragment() {
 
     private lateinit var galleryViewModel: GalleryViewModel
-    internal var imagePath: String? = ""
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,37 +46,36 @@ class GalleryFragment : Fragment() {
         galleryViewModel =
             ViewModelProviders.of(this).get(GalleryViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_gallery, container, false)
-        val textView: TextView = root.findViewById(R.id.text_total_factura)
+        val totalTextView: TextView = root.findViewById(R.id.text_total_factura)
         val listaFactura:ListView = root.findViewById(R.id.facturaList)
-        val button:Button = root.findViewById(R.id.button)
+        val compartirButton:Button = root.findViewById(R.id.button)
 
-        galleryViewModel.getFactura().observe(this, Observer {
+        galleryViewModel.getFactura().observe(this, Observer { factura ->
 
-            textView.text = "Total = $"+it.getTotal()
+            totalTextView.text = "Total = $"+factura.getTotal()
 
-            var list : ArrayList<String> = ArrayList()
-            it.items?.forEach{
+            val list : ArrayList<String> = ArrayList()
+            factura.items.forEach{
                 list.add(it.producto.descripcion)
                 Log.i("KEVIN-Agrega",it.producto.descripcion)
             }
 
-            val arrayAdapter = MyListAdapter(root.context, R.layout.row, it.items)
+            val arrayAdapter = MyListAdapter(root.context, R.layout.row, factura.items)
 
             listaFactura.adapter = arrayAdapter
         })
 
-        button.setOnClickListener {
-           val path = getWholeListViewItemsToBitmap(facturaList)?.let { it1 -> saveImageToStorage(it1) }
-            Compartir.bitmap(this.requireContext(), path.toString())
+        compartirButton.setOnClickListener {
+           val capturePath = listViewToBitmap(facturaList)?.let { it1 -> saveImageToStorage(it1) }
+            Compartir.bitmap(this.requireContext(),capturePath.toString())
         }
 
         return root
     }
 
-    fun getWholeListViewItemsToBitmap(listView: ListView): Bitmap? {
-        val listview: ListView = listView
+    private fun listViewToBitmap(listview: ListView): Bitmap? {
         val adapter: ListAdapter = listview.adapter
-        val itemscount: Int = adapter.getCount()
+        val itemscount: Int = adapter.count
         var allitemsheight = 0
         val bmps: MutableList<Bitmap> = ArrayList()
         for (i in 0 until itemscount) {
@@ -98,21 +95,20 @@ class GalleryFragment : Fragment() {
             allitemsheight,
             Bitmap.Config.ARGB_8888
         )
-        val bigcanvas = Canvas(bigbitmap)
-        val paint = Paint()
-        var iHeight:Float = 0F
-        bigcanvas.drawColor(Color.WHITE);
+        val bigcanvas: Canvas = Canvas(bigbitmap)
+        var iHeight = 0F
+        bigcanvas.drawColor(Color.WHITE)
         for (i in bmps.indices) {
-            var bmp: Bitmap = bmps[i]
+            val bmp: Bitmap = bmps[i]
 
             bigcanvas.drawBitmap(bmp, 0F, iHeight, null)
-            iHeight += bmp!!.height
+            iHeight += bmp.height
             bmp.recycle()
         }
         return bigbitmap
     }
 
-    fun getPermission(){
+    private fun getPermission(){
         if(Build.VERSION.SDK_INT> Build.VERSION_CODES.M){
             if(ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
                 ActivityCompat.requestPermissions(this.requireActivity(), arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),100)
@@ -120,13 +116,13 @@ class GalleryFragment : Fragment() {
         }
     }
 
-    fun saveImageToStorage(bitmap: Bitmap):String{
+    private fun saveImageToStorage(bitmap: Bitmap):String{
         getPermission()
 
-        var externalStorageStats= Environment.getExternalStorageState()
-        if(externalStorageStats.equals(Environment.MEDIA_MOUNTED)){
-            val storageDirectory = Environment.getExternalStorageDirectory().toString()
-            val file = File(storageDirectory,"test_image.jpg")
+        val externalStorageStats = Environment.getExternalStorageState()
+        if(externalStorageStats == Environment.MEDIA_MOUNTED){
+            val storageDirectory = context?.getExternalFilesDir(null)?.absolutePath
+            val file = File(storageDirectory,R.string.image_name.toString())
             try{
                 val stream: OutputStream = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
@@ -139,7 +135,7 @@ class GalleryFragment : Fragment() {
             return file.absolutePath
 
         }else{
-            Toast.makeText(context,"No se puede acceder a almacenamiento",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,R.string.toast_storage_problem,Toast.LENGTH_SHORT).show()
         }
 
         return ""

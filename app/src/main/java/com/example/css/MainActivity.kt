@@ -67,16 +67,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
        // if(item.itemId == R.id.action_compartir)
             //Compartir.bitmap(this)
-        /*
-        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.M){
-            if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),100)
-            }else{
-                saveImageToStorage();
-            }
-        }else{
-            saveImageToStorage()
-        }   */
+
 
         return super.onOptionsItemSelected(item)
     }
