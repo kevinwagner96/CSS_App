@@ -25,9 +25,11 @@ import com.example.css.ApiService
 import com.example.css.R
 import com.example.css.model.*
 import com.example.css.ui.gallery.GalleryViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import retrofit2.Call
+import com.google.zxing.integration.android.IntentIntegrator
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -52,6 +54,13 @@ class HomeFragment : Fragment() {
         val searchView: SearchView = root.findViewById(R.id.searchView)
         var actionBar: android.app.ActionBar? = activity?.actionBar
         val switch: Switch = root.findViewById(R.id.switch1)
+
+        val fab: FloatingActionButton = root.findViewById(R.id.fab)
+        fab.setOnClickListener { view ->
+            run {
+                IntentIntegrator(this.activity).initiateScan();
+            }
+        }
 
         actionBar?.setCustomView(searchView)
         actionBar?.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)

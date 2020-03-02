@@ -5,15 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/facturaList"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="307dp" />
-
     <TextView
         android:id="@+id/text_total_factura"
         android:layout_width="match_parent"
@@ -26,11 +17,30 @@
 
     <ListView
         android:id="@+id/facturaList"
-        android:layout_width="407dp"
-        android:layout_height="614dp"
-        android:layout_marginTop="80dp"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/text_total_factura"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="4dp">
 
     </ListView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/share_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_menu_share_white"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="30dp"
+
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

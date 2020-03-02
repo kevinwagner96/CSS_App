@@ -19,17 +19,20 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
 import com.example.css.R
 import com.example.css.helpers.Compartir
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 import java.lang.Exception
+import java.util.zip.Inflater
 import kotlin.collections.ArrayList
 
 
@@ -48,7 +51,8 @@ class GalleryFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_gallery, container, false)
         val totalTextView: TextView = root.findViewById(R.id.text_total_factura)
         val listaFactura:ListView = root.findViewById(R.id.facturaList)
-        val compartirButton:Button = root.findViewById(R.id.button)
+        val compartirButton:FloatingActionButton = root.findViewById(R.id.share_fab)
+
 
         galleryViewModel.getFactura().observe(this, Observer { factura ->
 
@@ -66,14 +70,34 @@ class GalleryFragment : Fragment() {
         })
 
         compartirButton.setOnClickListener {
-           val capturePath = listViewToBitmap(facturaList)?.let { it1 -> saveImageToStorage(it1) }
-            Compartir.bitmap(this.requireContext(),capturePath.toString())
+            val bitmap = listViewToBitmap(facturaList)
+            if(bitmap!=null) {
+                val capturePath = saveImageToStorage(bitmap)
+                Compartir.bitmap(this.requireContext(), capturePath)
+            }else{
+                Toast.makeText(context,"Lista vacia",Toast.LENGTH_SHORT).show()
+            }
         }
+
 
         return root
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        if(!hidden){
+            val share = this.activity?.findViewById<FloatingActionButton>(R.id.share_fab)
+            share?.show()
+        }
+
+
+
+        super.onHiddenChanged(hidden)
+    }
+
     private fun listViewToBitmap(listview: ListView): Bitmap? {
+        if(listview.isEmpty())
+            return null
+
         val adapter: ListAdapter = listview.adapter
         val itemscount: Int = adapter.count
         var allitemsheight = 0
@@ -117,6 +141,7 @@ class GalleryFragment : Fragment() {
     }
 
     private fun saveImageToStorage(bitmap: Bitmap):String{
+
         getPermission()
 
         val externalStorageStats = Environment.getExternalStorageState()
