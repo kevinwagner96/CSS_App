@@ -23,18 +23,11 @@ import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.example.css.helpers.Compartir
-import com.example.css.model.Factura
+import com.example.css.helpers.JsonIO
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
 import java.lang.Exception
-import java.util.jar.Manifest
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -93,6 +86,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStop() {
+        val fileName = cacheDir.absolutePath+"/PostJson.json"
+        JsonIO.writeJSONtoFile(fileName)
+        super.onStop()
+    }
+
+    override fun onStart() {
+        val fileName = cacheDir.absolutePath+"/PostJson.json"
+        try {
+            JsonIO.readJSONfromFile(fileName)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        super.onStart()
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.

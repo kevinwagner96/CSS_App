@@ -149,7 +149,7 @@ class HomeFragment : Fragment() {
             }
             .setPositiveButton("Agregar"){dialog, which ->
                 if(("0"+cant.text.toString()).toDouble()>0.0){
-                    Factura.addItem(Item(producto, ("0" + cant.text.toString()).toDouble()))
+                    MyFactura.addItem(Item(producto, ("0" + cant.text.toString()).toDouble()))
                     Toast.makeText(this.context, "Agergado", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(this.context, "Ingrese una cantidad", Toast.LENGTH_SHORT).show()

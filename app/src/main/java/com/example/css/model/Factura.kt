@@ -3,7 +3,7 @@ package com.example.css.model
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-object Factura {
+open class Factura {
 
     val items:ArrayList<Item> = ArrayList<Item>()
     private var total:Double = 0.0
@@ -25,3 +25,5 @@ object Factura {
     }
 
 }
+
+object MyFactura : Factura()
