@@ -12,6 +12,11 @@ open class Factura {
         items.add(item)
     }
 
+    fun removeAll(){
+        items.clear()
+        calcularTotal()
+    }
+
     private fun calcularTotal(){
         total =0.0
         items.forEach {

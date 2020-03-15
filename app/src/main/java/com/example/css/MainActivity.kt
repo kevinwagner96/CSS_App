@@ -23,10 +23,18 @@ import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ListView
 import android.widget.SearchView
+import android.widget.TextView
 import com.example.css.helpers.JsonIO
+import com.example.css.model.MyFactura
+import com.example.css.ui.gallery.GalleryFragment
+import com.example.css.ui.gallery.MyListAdapter
+import com.example.css.ui.home.HomeFragment
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
 
 
@@ -63,9 +71,10 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-       // if(item.itemId == R.id.action_compartir)
-            //Compartir.bitmap(this)
+       if(item.itemId == R.id.action_delete)
+            MyFactura.removeAll()
 
+        updateFactura()
 
         return super.onOptionsItemSelected(item)
     }
@@ -79,6 +88,7 @@ class MainActivity : AppCompatActivity() {
             val textBuscado : SearchView = findViewById(R.id.searchView)
             if(result.contents != null){
                 textBuscado.queryHint = result.contents
+
             } else {
                 textBuscado.queryHint = "Fallo Scan"
             }
@@ -112,5 +122,17 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    fun updateFactura(){
+
+        val totalTextView = this.findViewById<TextView>(R.id.text_total_factura)
+        val listaFactura = this.findViewById<ListView>(R.id.facturaList)
+
+        totalTextView?.text = "Total = $"+MyFactura.getTotal()
+
+        val arrayAdapter = MyListAdapter(this, R.layout.row, MyFactura.items)
+
+        listaFactura?.adapter = arrayAdapter
     }
 }

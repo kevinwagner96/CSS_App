@@ -2,6 +2,7 @@ package com.example.css.ui.gallery
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -16,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -26,6 +28,7 @@ import androidx.lifecycle.ViewModelProviders
 
 import com.example.css.R
 import com.example.css.helpers.Compartir
+import com.example.css.model.MyFactura
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import java.io.File
@@ -53,20 +56,13 @@ class GalleryFragment : Fragment() {
         val listaFactura:ListView = root.findViewById(R.id.facturaList)
         val compartirButton:FloatingActionButton = root.findViewById(R.id.share_fab)
 
+        val imm  =  context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(root.windowToken, 0)
+
+
 
         galleryViewModel.getFactura().observe(this, Observer { factura ->
-
-            totalTextView.text = "Total = $"+factura.getTotal()
-
-            val list : ArrayList<String> = ArrayList()
-            factura.items.forEach{
-                list.add(it.producto.descripcion)
-                Log.i("KEVIN-Agrega",it.producto.descripcion)
-            }
-
-            val arrayAdapter = MyListAdapter(root.context, R.layout.row, factura.items)
-
-            listaFactura.adapter = arrayAdapter
+            updateFactura()
         })
 
         compartirButton.setOnClickListener {
@@ -132,6 +128,18 @@ class GalleryFragment : Fragment() {
         return bigbitmap
     }
 
+     fun updateFactura(){
+
+        val totalTextView = this.activity?.findViewById<TextView>(R.id.text_total_factura)
+        val listaFactura = this.activity?.findViewById<ListView>(R.id.facturaList)
+
+        totalTextView?.text = "Total = $"+MyFactura.getTotal()
+
+        val arrayAdapter = MyListAdapter(this.requireContext(), R.layout.row, MyFactura.items)
+
+        listaFactura?.adapter = arrayAdapter
+    }
+
     private fun getPermission(){
         if(Build.VERSION.SDK_INT> Build.VERSION_CODES.M){
             if(ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
@@ -147,7 +155,7 @@ class GalleryFragment : Fragment() {
         val externalStorageStats = Environment.getExternalStorageState()
         if(externalStorageStats == Environment.MEDIA_MOUNTED){
             val storageDirectory = context?.getExternalFilesDir(null)?.absolutePath
-            val file = File(storageDirectory,R.string.image_name.toString())
+            val file = File(storageDirectory,"presupuesto.jpg")
             try{
                 val stream: OutputStream = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)

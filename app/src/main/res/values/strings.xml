@@ -6,7 +6,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="action_compartir_presupuesto">Compartir Carrito</string>
+    <string name="borrar_carrito">Eliminar Todos</string>
 
     <string name="menu_busqueda">Buscar</string>
     <string name="menu_carrito">Carrito</string>
