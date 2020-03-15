@@ -5,6 +5,7 @@ import com.example.css.model.BusquedaResponse
 import com.example.css.model.Producto
 import com.example.css.model.ProductoResponse
 import retrofit2.Call
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 /**
@@ -19,9 +20,12 @@ interface ApiService {
     @GET("producto")
     fun searchByDescripcion(@Query("buscado", encoded=true) desc: String): Call<BusquedaResponse>
 
-    @GET("producto/{id}")
-    fun getPostById(@Path("id") id: Int): Call<ProductoResponse>
+    @GET("producto")
+    fun getById(@Query("code",encoded=true) code: String): Call<ProductoResponse>
 
-    @POST("producto/{id}")
-    fun editPostById(@Path("id") id: Int, @Body post: Producto?): Call<Producto>
+    @GET("producto")
+    fun getByBarcode(@Query("barcode",encoded = true) barcode: String): Call<ProductoResponse>
+
+
+
 }

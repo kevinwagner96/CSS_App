@@ -22,10 +22,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ListView
 import android.widget.SearchView
+import android.widget.TextView
 import com.example.css.helpers.JsonIO
+import com.example.css.model.MyFactura
+import com.example.css.ui.gallery.GalleryFragment
+import com.example.css.ui.gallery.MyListAdapter
+import com.example.css.ui.home.HomeFragment
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
 
 
@@ -41,15 +50,11 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            run {
-                IntentIntegrator(this@MainActivity).initiateScan();
-            }
-        }
+
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
+
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -63,13 +68,18 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-       // if(item.itemId == R.id.action_compartir)
-            //Compartir.bitmap(this)
 
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+       if(item.itemId == R.id.action_delete)
+            MyFactura.removeAll()
+
+        updateFactura()
 
         return super.onOptionsItemSelected(item)
     }
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var result: IntentResult? = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
@@ -78,6 +88,7 @@ class MainActivity : AppCompatActivity() {
             val textBuscado : SearchView = findViewById(R.id.searchView)
             if(result.contents != null){
                 textBuscado.queryHint = result.contents
+
             } else {
                 textBuscado.queryHint = "Fallo Scan"
             }
@@ -111,5 +122,17 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    fun updateFactura(){
+
+        val totalTextView = this.findViewById<TextView>(R.id.text_total_factura)
+        val listaFactura = this.findViewById<ListView>(R.id.facturaList)
+
+        totalTextView?.text = "Total = $"+MyFactura.getTotal()
+
+        val arrayAdapter = MyListAdapter(this, R.layout.row, MyFactura.items)
+
+        listaFactura?.adapter = arrayAdapter
     }
 }

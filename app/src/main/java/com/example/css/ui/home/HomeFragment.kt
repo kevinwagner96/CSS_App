@@ -1,5 +1,6 @@
-package com.example.css.ui.home
+package com.example. css.ui.home
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.Website.URL
@@ -17,23 +18,32 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.css.ApiService
+import com.example.css.MainActivity
 import com.example.css.R
 import com.example.css.model.*
 import com.example.css.ui.gallery.GalleryViewModel
+import com.example.css.ui.slideshow.SlideshowFragment
+import com.example.css.ui.slideshow.SlideshowViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import retrofit2.Call
+import com.google.zxing.integration.android.IntentIntegrator
+import com.google.zxing.integration.android.IntentResult
+import okhttp3.OkHttpClient
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.util.concurrent.TimeUnit
 
 class HomeFragment : Fragment() {
 
@@ -53,6 +63,14 @@ class HomeFragment : Fragment() {
         var actionBar: android.app.ActionBar? = activity?.actionBar
         val switch: Switch = root.findViewById(R.id.switch1)
 
+        val fab: FloatingActionButton = root.findViewById(R.id.fab)
+        fab.setOnClickListener { view ->
+            run {
+                IntentIntegrator.forSupportFragment(this).initiateScan();
+
+            }
+        }
+
         actionBar?.setCustomView(searchView)
         actionBar?.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM)
         //searchView.setQuery("test",true)
@@ -62,7 +80,8 @@ class HomeFragment : Fragment() {
 
 
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.6:45455/api/")
+            .client(okHttpClient())
+            .baseUrl("http://192.168.0.117:8080/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -92,6 +111,7 @@ class HomeFragment : Fragment() {
 
 
 
+
         homeViewModel.getProductosList().observe(this, Observer {
             var list : ArrayList<String> = ArrayList()
             it?.forEach{
@@ -114,6 +134,30 @@ class HomeFragment : Fragment() {
     }
 
 
+    private fun showErrorDialog(){
+        val builder = android.app.AlertDialog.Builder(activity)
+
+
+            builder.setTitle("Error de conexion")
+            .setNeutralButton("Cancel"){_,_ -> }
+                .setMessage("Lo sentimos :(")
+
+        builder.create().show()
+    }
+
+    public override fun onActivityResult(requestCode:Int, resultCode:Int, data:Intent) {
+        var result: IntentResult? = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+
+        if(result != null){
+            if(result.contents != null){
+                getProductoByBarcode(result.contents);
+            } else {
+                Toast.makeText(this.context, "Error de lectura", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
 
     private fun showAddCarDialog(producto: Producto){
         val builder = android.app.AlertDialog.Builder(activity)
@@ -157,6 +201,11 @@ class HomeFragment : Fragment() {
                 }
 
             }
+            .setNegativeButton("Edit"){dialog, which ->
+                MyProducto.set(producto)
+                val frag : FragmentManager = activity!!.supportFragmentManager
+                frag.beginTransaction().add(R.layout.fragment_slideshow,SlideshowFragment()).commit()
+            }
 
         cant.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -184,11 +233,36 @@ class HomeFragment : Fragment() {
         service.searchByDescripcion(desc).enqueue(object: Callback<BusquedaResponse> {
             override fun onResponse(call: Call<BusquedaResponse>?, response: Response<BusquedaResponse>?) {
                 var posts = response?.body()
-
-                homeViewModel.setProductList(posts?.Value!!)
-
+                if(posts?.StatusCode ==200 && !posts.Value.isEmpty())
+                    homeViewModel.setProductList(posts?.Value!!)
+                else if(posts?.StatusCode ==200){
+                    Toast.makeText(context,"No hay resultados",Toast.LENGTH_SHORT).show()
+                }
+                else
+                    showErrorDialog()
             }
             override fun onFailure(call: Call<BusquedaResponse>?, t: Throwable?) {
+                showErrorDialog()
+                t?.printStackTrace()
+            }
+
+        })
+    }
+
+    fun getProductoByBarcode(barcode:String){
+        var post: ProductoResponse? = null
+        service.getByBarcode(barcode).enqueue(object: Callback<ProductoResponse>{
+            override fun onResponse(call: Call<ProductoResponse>?, response: Response<ProductoResponse>?) {
+                post = response?.body()
+                if(post?.StatusCode ==200 && post!!.Value!= null)
+                    showAddCarDialog(post?.Value!!)
+                else if (post?.StatusCode ==200)
+                    Toast.makeText(context,"El producto no existe :(",Toast.LENGTH_SHORT).show()
+                else
+                    showErrorDialog()
+            }
+            override fun onFailure(call: Call<ProductoResponse>?, t: Throwable?) {
+                showErrorDialog()
                 t?.printStackTrace()
             }
         })
@@ -198,19 +272,29 @@ class HomeFragment : Fragment() {
         //Recibimos los datos del post con ID = 1
 
         var post: ProductoResponse? = null
-        service.getPostById(code).enqueue(object: Callback<ProductoResponse>{
+        service.getById(code.toString()).enqueue(object: Callback<ProductoResponse>{
             override fun onResponse(call: Call<ProductoResponse>?, response: Response<ProductoResponse>?) {
                 post = response?.body()
-                if(post?.Value!=null)
+                if(post?.StatusCode ==200 && post!!.Value!= null)
                     showAddCarDialog(post?.Value!!)
-                else
+                else if (post?.StatusCode ==200)
                     Toast.makeText(context,"El producto no existe :(",Toast.LENGTH_SHORT).show()
+                else
+                    showErrorDialog()
             }
             override fun onFailure(call: Call<ProductoResponse>?, t: Throwable?) {
+                showErrorDialog()
                 t?.printStackTrace()
             }
         })
     }
 
+    final fun okHttpClient():OkHttpClient {
+       return OkHttpClient . Builder ()
+            .connectTimeout(3, TimeUnit.SECONDS)
+            .writeTimeout(3, TimeUnit.SECONDS)
+            .readTimeout(3, TimeUnit.SECONDS)
+            .build();
 
+    }
 }
