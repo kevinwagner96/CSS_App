@@ -13,10 +13,18 @@
 
     <SeekBar
         android:id="@+id/seekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="43dp"
         android:layout_below="@+id/editTextCantidad"
-        android:layout_marginTop="17dp" />
+        android:layout_alignStart="@+id/textViewDescripcion"
+        android:layout_alignLeft="@+id/textViewDescripcion"
+        android:layout_alignEnd="@+id/textViewTotal"
+        android:layout_alignRight="@+id/textViewTotal"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginRight="80dp" />
 
     <EditText
         android:id="@+id/editTextCantidad"
@@ -57,5 +65,21 @@
         android:layout_toRightOf="@+id/editTextCantidad"
         android:text="Total:"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <ImageButton
+        android:id="@+id/btn_calculadora"
+        android:layout_width="75dp"
+        android:layout_below="@+id/editTextCantidad"
+        android:layout_alignEnd="@+id/textViewTotal"
+        android:layout_alignRight="@+id/textViewTotal"
+        android:layout_alignBottom="@+id/seekBar"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="-10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/calculator"
+        android:layout_height="wrap_content" />
+
 
 </RelativeLayout>

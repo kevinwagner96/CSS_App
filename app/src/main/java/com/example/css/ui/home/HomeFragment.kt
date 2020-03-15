@@ -1,5 +1,6 @@
 package com.example. css.ui.home
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -19,10 +20,13 @@ import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.css.ApiService
 import com.example.css.MainActivity
 import com.example.css.R
@@ -36,6 +40,8 @@ import kotlinx.android.synthetic.main.fragment_gallery.*
 import retrofit2.Call
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
+import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.layout_add_to_car.*
 import okhttp3.OkHttpClient
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,7 +87,7 @@ class HomeFragment : Fragment() {
 
         val retrofit: Retrofit = Retrofit.Builder()
             .client(okHttpClient())
-            .baseUrl("http://192.168.0.117:8080/api/")
+            .baseUrl("http://192.168.0.6:45455/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -160,6 +166,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun showAddCarDialog(producto: Producto){
+        val dialog : android.app.AlertDialog
         val builder = android.app.AlertDialog.Builder(activity)
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.layout_add_to_car,null)
@@ -167,11 +174,17 @@ class HomeFragment : Fragment() {
         val cant = view.findViewById<EditText>(R.id.editTextCantidad)
         val desc = view.findViewById<TextView>(R.id.textViewDescripcion)
         val total = view.findViewById<TextView>(R.id.textViewTotal)
+        val calcular = view.findViewById<ImageButton>(R.id.btn_calculadora)
+
 
         desc.setText(producto.descripcion)
         cant.setText("1")
         val decimal = BigDecimal(producto.precioContado).setScale(2, RoundingMode.HALF_EVEN)
         total.setText("Total= $"+decimal.toString())
+
+
+
+
 
         scroll.progress = 1
         scroll.max = 20
@@ -223,9 +236,15 @@ class HomeFragment : Fragment() {
             }
         }
         )
+        dialog = builder.create()
 
+        calcular.setOnClickListener{
+            MyProducto.set(producto)
+            nav_host_fragment.findNavController().navigate(R.id.nav_slideshow)
+            dialog.cancel()
+        }
 
-        builder.create().show()
+        dialog.show()
     }
 
     fun searchByDescripcion(desc:String){
@@ -298,3 +317,4 @@ class HomeFragment : Fragment() {
 
     }
 }
+
