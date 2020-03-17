@@ -1,10 +1,15 @@
 package com.example.css.ui.slideshow
 
+import android.app.ActionBar
+import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,6 +19,7 @@ import com.example.css.model.MyProducto
 import org.w3c.dom.Text
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.sqrt
 
 class SlideshowFragment : Fragment() {
 
@@ -67,6 +73,7 @@ class SlideshowFragment : Fragment() {
 
         altura.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                metrosCuadrados.clearFocus()
                 ALTURA = (i.toDouble()/2).toDouble()
                 metrosAlto.setText(ALTURA.toString())
                 val decimal = BigDecimal(ALTURA*ANCHO).setScale(2, RoundingMode.HALF_EVEN)
@@ -79,6 +86,7 @@ class SlideshowFragment : Fragment() {
 
         ancho.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                metrosCuadrados.clearFocus()
                 ANCHO = (i.toDouble()/2).toDouble()
                 metrosAncho.setText(ANCHO.toString())
                 val decimal = BigDecimal(ALTURA*ANCHO).setScale(2, RoundingMode.HALF_EVEN)
@@ -89,13 +97,87 @@ class SlideshowFragment : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
         })
 
+        metrosCuadrados.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                if (metrosCuadrados.isFocused) {
+                    if (!p0.isNullOrBlank()) {
+                        var cantidad = ("0" + p0.toString()).toDouble()
+                        ANCHO = sqrt(cantidad)
+                        ALTURA = sqrt(cantidad)
+                        metrosAncho.setText(
+                            BigDecimal(ANCHO).setScale(2, RoundingMode.HALF_EVEN).toString()
+                        )
+                        metrosAlto.setText(
+                            BigDecimal(ALTURA).setScale(2, RoundingMode.HALF_EVEN).toString()
+                        )
+                        updateFrame(frame, frameInterior)
+                    }
+
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        }
+        )
+
+        metrosAlto.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+                    if (!p0.isNullOrBlank()) {
+                        var alto = ("0" + p0.toString()).toDouble()
+                        ALTURA = alto
+                        val decimal = BigDecimal(ALTURA*ANCHO).setScale(2, RoundingMode.HALF_EVEN)
+                        metrosCuadrados.setText(decimal.toString())
+
+                        updateFrame(frame, frameInterior)
+                    }
+
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        }
+        )
+
+
+      // val input :InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+
+        metrosAncho.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+                    if (!p0.isNullOrBlank()) {
+                        var ancho = ("0" + p0.toString()).toDouble()
+                        ANCHO = ancho
+                        val decimal = BigDecimal(ALTURA*ANCHO).setScale(2, RoundingMode.HALF_EVEN)
+                        metrosCuadrados.setText(decimal.toString())
+                        updateFrame(frame, frameInterior)
+                    }
+
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        }
+        )
 
 
         return root
     }
 
     fun updateFrame(frame:FrameLayout,frameInterior:FrameLayout){
-        val params = FrameLayout.LayoutParams(((frame.width/10)*ANCHO).toInt(),((frame.height/10)*ALTURA).toInt(),Gravity.CENTER)
+        val params: FrameLayout.LayoutParams
+        if(ANCHO >= ALTURA)
+            params = FrameLayout.LayoutParams(frame.width,((frame.height)*(ALTURA/ANCHO)).toInt(),Gravity.CENTER)
+        else
+            params = FrameLayout.LayoutParams((frame.width*(ANCHO/ALTURA)).toInt(),frame.height,Gravity.CENTER)
+
         frameInterior.layoutParams=params
     }
 
