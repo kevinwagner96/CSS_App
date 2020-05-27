@@ -54,8 +54,8 @@ class SlideshowFragment : Fragment() {
 
         slideshowViewModel.getProducto().observe(this, Observer {
             descripcion.text = it.descripcion
-            metrosPorCaja.text = "$"+it.precioContado()+" x M2"
-            precioPorCaja.text = "$"+it.precioContadoPor(it.ratioConversion)+" x CAJA"
+            metrosPorCaja.text = "$"+it.precioContado()+" x m²"
+            precioPorCaja.text = "$"+it.precioContadoPor(it.ratioConversion)+" x Caja"
 
         })
 
@@ -79,6 +79,7 @@ class SlideshowFragment : Fragment() {
                 val decimal = BigDecimal(ALTURA*ANCHO).setScale(2, RoundingMode.HALF_EVEN)
                 metrosCuadrados.setText(decimal.toString())
                 updateFrame(frame,frameInterior)
+                updateResumen(resumen,total)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
@@ -92,6 +93,7 @@ class SlideshowFragment : Fragment() {
                 val decimal = BigDecimal(ALTURA*ANCHO).setScale(2, RoundingMode.HALF_EVEN)
                 metrosCuadrados.setText(decimal.toString())
                 updateFrame(frame,frameInterior)
+                updateResumen(resumen,total)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
@@ -111,6 +113,7 @@ class SlideshowFragment : Fragment() {
                             BigDecimal(ALTURA).setScale(2, RoundingMode.HALF_EVEN).toString()
                         )
                         updateFrame(frame, frameInterior)
+                        updateResumen(resumen,total)
                     }
 
                 }
@@ -132,6 +135,7 @@ class SlideshowFragment : Fragment() {
                         metrosCuadrados.setText(decimal.toString())
 
                         updateFrame(frame, frameInterior)
+                        updateResumen(resumen,total)
                     }
 
             }
@@ -155,6 +159,7 @@ class SlideshowFragment : Fragment() {
                         val decimal = BigDecimal(ALTURA*ANCHO).setScale(2, RoundingMode.HALF_EVEN)
                         metrosCuadrados.setText(decimal.toString())
                         updateFrame(frame, frameInterior)
+                        updateResumen(resumen,total)
                     }
 
 
@@ -179,6 +184,17 @@ class SlideshowFragment : Fragment() {
             params = FrameLayout.LayoutParams((frame.width*(ANCHO/ALTURA)).toInt(),frame.height,Gravity.CENTER)
 
         frameInterior.layoutParams=params
+
+    }
+
+    fun updateResumen(resumen:TextView,total:TextView){
+        val decimal = BigDecimal(ALTURA*ANCHO).setScale(2, RoundingMode.HALF_EVEN)
+        val cajas =  (((ALTURA*ANCHO)/MyProducto.producto.ratioConversion).toInt()+1)
+        val totatS :Double
+        resumen.text= decimal.toString()+" m² ≈ " + cajas.toString() +" Cajas"
+        totatS = MyProducto.producto.precioContado*MyProducto.producto.ratioConversion*cajas
+        total.text = "$ "+BigDecimal(totatS).setScale(2, RoundingMode.HALF_EVEN)
+
     }
 
 }

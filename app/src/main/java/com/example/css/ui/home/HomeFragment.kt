@@ -87,7 +87,7 @@ class HomeFragment : Fragment() {
 
         val retrofit: Retrofit = Retrofit.Builder()
             .client(okHttpClient())
-            .baseUrl("http://192.168.0.6:45455/api/")
+            .baseUrl("http://192.168.0.117:8080/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -310,9 +310,9 @@ class HomeFragment : Fragment() {
 
     final fun okHttpClient():OkHttpClient {
        return OkHttpClient . Builder ()
-            .connectTimeout(3, TimeUnit.SECONDS)
-            .writeTimeout(3, TimeUnit.SECONDS)
-            .readTimeout(3, TimeUnit.SECONDS)
+            .connectTimeout(8, TimeUnit.SECONDS)
+            .writeTimeout(8, TimeUnit.SECONDS)
+            .readTimeout(8, TimeUnit.SECONDS)
             .build();
 
     }

@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextView"
+        android:textColor="@color/colorPrimaryDark"
+        android:gravity="end"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="@+id/txtDesc"
         app:layout_constraintStart_toEndOf="@+id/txtM2"
@@ -118,6 +120,7 @@
         android:id="@+id/txtM2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_marginTop="8dp"
         android:text="TextView"
         android:textSize="25sp"
@@ -129,10 +132,13 @@
         android:layout_width="379dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:text=""
+        android:textColor="@color/colorPrimaryDark"
+        android:gravity="center"
         android:textSize="30sp"
-        app:layout_constraintTop_toBottomOf="@+id/txtPrecioXCaja"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintEnd_toEndOf="@+id/txtPrecioXCaja"
+        app:layout_constraintStart_toStartOf="@+id/txtM2"
+        app:layout_constraintTop_toBottomOf="@+id/txtPrecioXCaja" />
 
     <Button
         android:id="@+id/btn_add"
@@ -140,8 +146,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:background="@color/colorPrimary"
         android:text="Agregar"
-        app:layout_constraintBottom_toBottomOf="@+id/total"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_cancel"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
@@ -153,11 +160,15 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
-        android:text="TextView"
-        android:textSize="30sp"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#008f39"
+        android:textSize="25dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/frame"
         app:layout_constraintEnd_toStartOf="@+id/btn_cancel"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_cancel" />
 
     <Button
         android:id="@+id/btn_cancel"
@@ -165,8 +176,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorPrimary"
         android:text="@android:string/cancel"
-        app:layout_constraintBottom_toBottomOf="@+id/total"
+        app:layout_constraintBottom_toTopOf="@+id/frame"
         app:layout_constraintEnd_toStartOf="@+id/btn_add" />
 
 
