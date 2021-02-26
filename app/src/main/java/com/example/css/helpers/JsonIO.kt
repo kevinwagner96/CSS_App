@@ -20,7 +20,9 @@ object JsonIO {
     }
 
     fun readJSONfromFile(f:String) {
-
+        if(MyFactura.items.size > 0){
+            return;
+        }
         //Creating a new Gson object to read data
         var gson = Gson()
         //Read the PostJSON.json file

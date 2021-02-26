@@ -46,7 +46,6 @@ class AddCarDialog : AppCompatDialogFragment() {
             }
             .setPositiveButton("Agregar"){dialog, which ->
                 Toast.makeText(this.context,"Agergado", Toast.LENGTH_SHORT).show()
-
             }
 
         return builder.create()

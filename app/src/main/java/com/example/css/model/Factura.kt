@@ -8,8 +8,12 @@ open class Factura {
     val items:ArrayList<Item> = ArrayList<Item>()
     private var total:Double = 0.0
 
-    fun addItem(item:Item){
+    fun addItem(item: Item){
         items.add(item)
+    }
+
+    fun removeLastItem(){
+        items.removeAt(items.size-1)
     }
 
     fun removeAll(){
@@ -27,6 +31,10 @@ open class Factura {
     fun getTotal():String{
         calcularTotal()
         return BigDecimal(total).setScale(2, RoundingMode.HALF_EVEN).toString()
+    }
+
+    fun removeItem(position:Int){
+        items.removeAt(position);
     }
 
 }

@@ -15,12 +15,32 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
 
-    <string name="api_url">http://192.168.0.6:45455/api/</string>
+    <string name="server1">http://192.168.0.250:3000/api/</string>
+    <string name="server2">http://corralonsansalvador.ddns.net/api/</string>
+    <string name="server3">http://corralon.ddns.net/api/</string>
 
     <string name="image_name">presupuesto.jpg</string>
 
 
+
     <string name="toast_storage_problem">No se puede acceder al almacenamiento</string>
     <string name="other">No se puede acceder al almacenamiento</string>
-
+    <string-array name="PisosMarcas">
+        <item>ALBERDI</item>
+        <item>CORTINES</item>
+        <item>CERAMICAS LOURDES</item>
+        <item>Cañuelas</item>
+        <item>lourdes</item>
+        <item>SAN PIETRO LOURDES</item>
+        <item>SIMOLEX</item>
+        <item>Tendenza</item>
+    </string-array>
+    <string-array name="PisosDepartamentos">
+        <item>ESMALTADOS GENESIS-BALDOS</item>
+        <item>Ceramica</item>
+        <item>CERAMICA REVESTIMIENTO</item>
+        <item>Pisos</item>
+        <item>PORCELANATO</item>
+        <item>Porcelánico</item>
+    </string-array>
 </resources>

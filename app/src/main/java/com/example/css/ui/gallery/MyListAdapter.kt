@@ -31,7 +31,9 @@ class MyListAdapter(var mCtx:Context , var resource:Int,var items:List<Item>) :A
 
         textCode.text = item.producto.code
 
-        if(item.cantidad == 1.0)
+        if("TOTAL" in item.getUnidad())
+            textView1.text = item.getUnidad()+" = $"+item.getTotal()
+        else if(item.cantidad == 1.0)
             textView1.text = item.cantidad.toString()+item.getUnidad()+" = $"+item.getTotal()
         else
             textView1.text = item.cantidad.toString()+item.getUnidad()+" x $"+item.producto.precioContado()+" = $"+item.getTotal()
@@ -39,5 +41,9 @@ class MyListAdapter(var mCtx:Context , var resource:Int,var items:List<Item>) :A
 
         return view
     }
+
+
+
+
 
 }

@@ -1,7 +1,5 @@
 package com.example.css.ui.slideshow
 
-import android.app.ActionBar
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,14 +7,17 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.example.css.R
+import com.example.css.model.Item
+import com.example.css.model.MyFactura
 import com.example.css.model.MyProducto
-import org.w3c.dom.Text
+import com.example.css.model.MyProducto.producto
+import kotlinx.android.synthetic.main.content_main.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.sqrt
@@ -26,7 +27,7 @@ class SlideshowFragment : Fragment() {
     private lateinit var slideshowViewModel: SlideshowViewModel
     private var ALTURA:Double = 1.0
     private var ANCHO:Double = 1.0
-
+    private var cajas:Int =0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,12 +51,29 @@ class SlideshowFragment : Fragment() {
         val resumen  : TextView = root.findViewById(R.id.resumen)
         val total : TextView = root.findViewById(R.id.total)
 
+        val agregar : TextView = root.findViewById(R.id.btn_add)
+        val cancelar : TextView = root.findViewById(R.id.btn_cancel)
+
+        agregar.setOnClickListener{
+            if(("0"+(cajas*MyProducto.producto.ratio_conversion)).toDouble()>0.0){
+                MyFactura.addItem(Item(producto, ("0" + (cajas*MyProducto.producto.ratio_conversion).toString()).toDouble()))
+                Toast.makeText(this.context, "Agregado", Toast.LENGTH_SHORT).show()
+                nav_host_fragment.findNavController().navigate(R.id.nav_home)
+            }else{
+                Toast.makeText(this.context, "Ingrese una cantidad", Toast.LENGTH_SHORT).show()
+                //showAddCarDialog(producto)
+            }
+        }
+
+        cancelar.setOnClickListener{
+            nav_host_fragment.findNavController().navigate(R.id.nav_home)
+        }
 
 
         slideshowViewModel.getProducto().observe(this, Observer {
             descripcion.text = it.descripcion
             metrosPorCaja.text = "$"+it.precioContado()+" x m²"
-            precioPorCaja.text = "$"+it.precioContadoPor(it.ratioConversion)+" x Caja"
+            precioPorCaja.text = "$"+it.precioContadoPor(it.ratio_conversion)+" x Caja"
 
         })
 
@@ -189,10 +207,10 @@ class SlideshowFragment : Fragment() {
 
     fun updateResumen(resumen:TextView,total:TextView){
         val decimal = BigDecimal(ALTURA*ANCHO).setScale(2, RoundingMode.HALF_EVEN)
-        val cajas =  (((ALTURA*ANCHO)/MyProducto.producto.ratioConversion).toInt()+1)
+        cajas =  (((ALTURA*ANCHO)/MyProducto.producto.ratio_conversion).toInt()+1)
         val totatS :Double
         resumen.text= decimal.toString()+" m² ≈ " + cajas.toString() +" Cajas"
-        totatS = MyProducto.producto.precioContado*MyProducto.producto.ratioConversion*cajas
+        totatS = MyProducto.producto.precio_contado*MyProducto.producto.ratio_conversion*cajas
         total.text = "$ "+BigDecimal(totatS).setScale(2, RoundingMode.HALF_EVEN)
 
     }

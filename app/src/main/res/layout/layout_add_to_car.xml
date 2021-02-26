@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -8,78 +9,129 @@
         android:id="@+id/textViewDescripcion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
         android:text="Product"
-        android:textSize="20dp"/>
+        android:textSize="20dp" />
 
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="300dp"
-        android:layout_height="43dp"
-        android:layout_below="@+id/editTextCantidad"
-        android:layout_alignStart="@+id/textViewDescripcion"
-        android:layout_alignLeft="@+id/textViewDescripcion"
-        android:layout_alignEnd="@+id/textViewTotal"
-        android:layout_alignRight="@+id/textViewTotal"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginRight="80dp" />
+    <ImageButton
+        android:id="@+id/btn_calculadora"
+        android:layout_width="53dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/textViewTotal"
+
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="0dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/calculator" />
+
+    <TextView
+        android:id="@+id/textViewTotal"
+        android:layout_width="263dp"
+        android:layout_height="30dp"
+        android:layout_alignEnd="@+id/textViewDescripcion"
+        android:layout_alignRight="@+id/textViewDescripcion"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/editTextCantidad"
+        android:layout_toRightOf="@+id/editTextCantidad"
+        android:autoText="false"
+        android:gravity="end"
+        android:text="Total:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#293CA1"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/editTextCantidad"
         android:layout_width="46dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textViewDescripcion"
-        android:layout_marginStart="6dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginTop="10dp"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_marginStart="7dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginBottom="-9dp"
         android:layout_toEndOf="@+id/textView3"
         android:layout_toRightOf="@+id/textView3"
-        android:ems="10"
 
-        android:inputType="numberDecimal" />
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:textSize="20dp" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="278dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/textViewTotal"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+
+        android:layout_toStartOf="@+id/btn_calculadora"
+        android:layout_toLeftOf="@+id/btn_calculadora" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_below="@+id/textViewDescripcion"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="13dp"
+        android:layout_below="@+id/radioGroup"
+        android:layout_alignStart="@+id/textViewDescripcion"
+        android:layout_alignLeft="@+id/textViewDescripcion"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="4dp"
         android:text="Cant:"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="20dp" />
 
-    <TextView
-        android:id="@+id/textViewTotal"
-        android:layout_width="251dp"
-        android:layout_height="wrap_content"
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="378dp"
+        android:layout_height="35dp"
         android:layout_below="@+id/textViewDescripcion"
-        android:layout_marginStart="11dp"
-        android:layout_marginLeft="11dp"
-        android:layout_marginTop="12dp"
-        android:layout_toEndOf="@+id/editTextCantidad"
-        android:layout_toRightOf="@+id/editTextCantidad"
-        android:text="Total:"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:layout_alignStart="@+id/textViewDescripcion"
+        android:layout_alignLeft="@+id/textViewDescripcion"
+        android:layout_alignEnd="@+id/textViewDescripcion"
+        android:layout_alignRight="@+id/textViewDescripcion"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:orientation="horizontal">
 
-    <ImageButton
-        android:id="@+id/btn_calculadora"
-        android:layout_width="75dp"
-        android:layout_below="@+id/editTextCantidad"
-        android:layout_alignEnd="@+id/textViewTotal"
-        android:layout_alignRight="@+id/textViewTotal"
-        android:layout_alignBottom="@+id/seekBar"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginBottom="-10dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/calculator"
-        android:layout_height="wrap_content" />
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="163dp"
+            android:layout_height="wrap_content"
+            android:text="RadioButton" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="163dp"
+            android:layout_height="wrap_content"
+            android:text="RadioButton" />
+    </RadioGroup>
 
 
 </RelativeLayout>

@@ -82,18 +82,23 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        var result: IntentResult? = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        try {
+            var result: IntentResult? =
+                IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
 
-        if(result != null){
-            val textBuscado : SearchView = findViewById(R.id.searchView)
-            if(result.contents != null){
-                textBuscado.queryHint = result.contents
+            if (result != null) {
+                val textBuscado: SearchView = findViewById(R.id.searchView)
+                if (result.contents != null) {
+                    textBuscado.queryHint = result.contents
 
+                } else {
+                    textBuscado.queryHint = "Fallo Scan"
+                }
             } else {
-                textBuscado.queryHint = "Fallo Scan"
+                super.onActivityResult(requestCode, resultCode, data)
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
+        }catch (e:Exception){
+            return
         }
     }
 

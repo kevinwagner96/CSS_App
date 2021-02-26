@@ -1,6 +1,7 @@
 package com.example.css
 
 
+import com.example.css.model.AutomaticSearchResponse
 import com.example.css.model.BusquedaResponse
 import com.example.css.model.Producto
 import com.example.css.model.ProductoResponse
@@ -14,18 +15,23 @@ import retrofit2.http.*
  */
 interface ApiService {
 
-    @GET("producto/")
+    @GET("product/")
     fun getAllPosts(): Call<List<Producto>>
 
-    @GET("producto")
-    fun searchByDescripcion(@Query("buscado", encoded=true) desc: String): Call<BusquedaResponse>
+    @GET("product")
+    fun searchByDescripcion(@Query("text", encoded=true) desc: String): Call<BusquedaResponse>
 
-    @GET("producto")
-    fun getById(@Query("code",encoded=true) code: String): Call<ProductoResponse>
+    @GET("search")
+    fun automaticSearch(@Query("text", encoded=true) desc: String): Call<AutomaticSearchResponse>
 
-    @GET("producto")
-    fun getByBarcode(@Query("barcode",encoded = true) barcode: String): Call<ProductoResponse>
+    @GET("product/{id}")
+    fun getById(@Path("id",encoded=true) code: String): Call<ProductoResponse>
+
+    @GET("barcode/")
+    fun getByBarcode(@Query("text",encoded = true) barcode: String): Call<ProductoResponse>
 
 
 
 }
+
+lateinit var service: ApiService

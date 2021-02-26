@@ -12,7 +12,7 @@ object Compartir {
         try {
             val shareIntent = Intent()
             shareIntent.action = Intent.ACTION_SEND
-            shareIntent.type = "image/jpeg"
+            shareIntent.type = "image/*"
 
             Toast.makeText(context, path, Toast.LENGTH_LONG).show()
 

@@ -11,11 +11,15 @@ class Item {
     constructor(producto: Producto , cant:Double){
         this.producto = producto
         cantidad = cant
-        total = producto.precioContado * cant
+        total = producto.precio_contado * cant
     }
 
     fun getTotal():String{
         return BigDecimal(total).setScale(2, RoundingMode.HALF_EVEN).toString()
+    }
+
+    fun getName():String{
+        return producto.descripcion
     }
 
     fun getUnidad():String{

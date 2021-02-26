@@ -2,7 +2,10 @@ package com.example.css.ui.gallery
 
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -22,13 +25,16 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isEmpty
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
 import com.example.css.R
 import com.example.css.helpers.Compartir
+import com.example.css.model.Item
 import com.example.css.model.MyFactura
+import com.example.css.model.Producto
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import java.io.File
@@ -59,13 +65,40 @@ class GalleryFragment : Fragment() {
         val imm  =  context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(root.windowToken, 0)
 
+        listaFactura.setOnItemClickListener { parent, view, position, id ->
+            val arrayAdapter = MyListAdapter(this.requireContext(), R.layout.row, MyFactura.items)
+            val element =  arrayAdapter.getItem(position) as Item
 
+
+            val builder = AlertDialog.Builder(this.activity)
+            builder.setTitle("Borrar")
+                .setMessage(element.getName())
+                .setCancelable(false)
+                .setPositiveButton("Si") { dialog, id ->
+                    MyFactura.removeItem(position)
+                    updateFactura()
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
+
+
+        }
 
         galleryViewModel.getFactura().observe(this, Observer { factura ->
             updateFactura()
         })
 
         compartirButton.setOnClickListener {
+            var total = Producto()
+            total.descripcion = ""
+            total.unidad = "TOTAL: "
+            total.precio_contado = MyFactura.getTotal().toDouble()
+            MyFactura.addItem(Item(total,1.0))
+
             val bitmap = listViewToBitmap(facturaList)
             if(bitmap!=null) {
                 val capturePath = saveImageToStorage(bitmap)
@@ -73,6 +106,8 @@ class GalleryFragment : Fragment() {
             }else{
                 Toast.makeText(context,"Lista vacia",Toast.LENGTH_SHORT).show()
             }
+
+            MyFactura.removeLastItem()
         }
 
 
@@ -153,12 +188,12 @@ class GalleryFragment : Fragment() {
         getPermission()
 
         val externalStorageStats = Environment.getExternalStorageState()
+        val storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
         if(externalStorageStats == Environment.MEDIA_MOUNTED){
-            val storageDirectory = context?.getExternalFilesDir(null)?.absolutePath
-            val file = File(storageDirectory,"presupuesto.jpg")
+            val file = File(storageDirectory,"presupuesto.PNG")
             try{
                 val stream: OutputStream = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
+                bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
                 stream.flush()
                 stream.close()
                 Toast.makeText(context,"Path:"+ Uri.parse(file.absolutePath),Toast.LENGTH_SHORT).show()
@@ -172,5 +207,26 @@ class GalleryFragment : Fragment() {
         }
 
         return ""
+    }
+
+    class BorrarProducto : DialogFragment() {
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            return activity?.let {
+                // Use the Builder class for convenient dialog construction
+                val builder = AlertDialog.Builder(it)
+                builder.setMessage("Eliminar del carro")
+                    .setPositiveButton("SI",
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // FIRE ZE MISSILES!
+                        })
+                    .setNegativeButton("NO",
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User cancelled the dialog
+                        })
+                // Create the AlertDialog object and return it
+                builder.create()
+            } ?: throw IllegalStateException("Activity cannot be null")
+        }
     }
 }
