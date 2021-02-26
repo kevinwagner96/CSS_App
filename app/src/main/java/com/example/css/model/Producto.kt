@@ -26,6 +26,16 @@ open class Producto {
         return BigDecimal(precio_contado).setScale(2, RoundingMode.HALF_EVEN).toString()
     }
 
+    fun getPrecioContadoString(unity:Double,cant:Double):String{
+        var text = "P.C. $"+BigDecimal(cant * this.precio_contado*unity).setScale(2, RoundingMode.HALF_EVEN)
+        return  text
+    }
+
+    fun getPrecioListaString(unity:Double,cant:Double):String{
+        var text = "P.L. $"+BigDecimal(cant * this.precio_lista*unity).setScale(2, RoundingMode.HALF_EVEN)
+        return  text
+    }
+
     fun precioListaPor(n:Int): Double {
         return precio_contado*n
     }

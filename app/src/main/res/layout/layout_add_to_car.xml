@@ -26,11 +26,11 @@
         android:id="@+id/btn_calculadora"
         android:layout_width="53dp"
         android:layout_height="45dp"
-        android:layout_below="@+id/textViewTotal"
 
+        android:layout_below="@+id/textViewTotalLista"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="0dp"
@@ -55,8 +55,30 @@
         android:gravity="end"
         android:text="Total:"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#293CA1"
+        android:textColor="#4CAF50"
         android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewTotalLista"
+        android:layout_width="263dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewTotal"
+        android:layout_alignEnd="@+id/textViewDescripcion"
+        android:layout_alignRight="@+id/textViewDescripcion"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_toEndOf="@+id/editTextCantidad"
+        android:layout_toRightOf="@+id/editTextCantidad"
+        android:autoText="false"
+        android:gravity="end"
+        android:text="Total:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#FF5722"
+        android:textSize="14dp"
         android:textStyle="bold" />
 
     <EditText
@@ -78,15 +100,15 @@
         android:id="@+id/seekBar"
         android:layout_width="278dp"
         android:layout_height="45dp"
-        android:layout_below="@+id/textViewTotal"
+        android:layout_below="@+id/textViewTotalLista"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
 
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginRight="25dp"
         android:layout_toStartOf="@+id/btn_calculadora"
         android:layout_toLeftOf="@+id/btn_calculadora" />
 

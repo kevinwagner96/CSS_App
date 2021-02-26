@@ -91,7 +91,19 @@ class HomeFragment : Fragment() {
 
 
         Handler().postDelayed({ automaticSearch("")}, 3000)
+        searchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener{
+            override fun onSuggestionSelect(position: Int): Boolean {
+                TODO("Not yet implemented")
+            }
 
+            override fun onSuggestionClick(position: Int): Boolean {
+                val cursor = searchView.suggestionsAdapter.cursor
+                searchView.setQuery(cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1)),true)
+
+                return true
+            }
+
+        })
 
         searchView.setOnQueryTextListener( object : OnQueryTextListener{
             override fun onQueryTextChange(newText: String): Boolean {
@@ -130,6 +142,7 @@ class HomeFragment : Fragment() {
                 return false
             }
         }
+
         )
 
 
@@ -220,6 +233,7 @@ class HomeFragment : Fragment() {
         val cant = view.findViewById<EditText>(R.id.editTextCantidad)
         val desc = view.findViewById<TextView>(R.id.textViewDescripcion)
         val total = view.findViewById<TextView>(R.id.textViewTotal)
+        val totalLista = view.findViewById<TextView>(R.id.textViewTotalLista)
         val calcular = view.findViewById<ImageButton>(R.id.btn_calculadora)
         val radioButton1 = view.findViewById<RadioButton>(R.id.radioButton)
         val radioButton2 = view.findViewById<RadioButton>(R.id.radioButton2)
@@ -244,24 +258,33 @@ class HomeFragment : Fragment() {
         }
 
         radioButton1.setOnClickListener{
-            changeUnity = 1.0
-            val cantidad = cant.text.toString().toDouble()
-            val decimal = BigDecimal(cantidad * producto.precio_contado*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
-            total.setText("Total= $"+decimal.toString())
+            if(cant.text.toString() != "") {
+                changeUnity = 1.0
+                val cantidad = cant.text.toString().toDouble()
+                // val decimal = BigDecimal(cantidad * producto.precio_contado*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
+                //val decimalL = BigDecimal(cantidad * producto.precio_lista*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
+                total.setText(producto.getPrecioContadoString(changeUnity, cantidad))
+                totalLista.setText(producto.getPrecioListaString(changeUnity, cantidad))
+            }
         }
 
         radioButton2.setOnClickListener{
-            val cantidad = cant.text.toString().toDouble()
-            changeUnity = producto.ratio_conversion
-            val decimal = BigDecimal(cantidad * producto.precio_contado*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
-            total.setText("Total= $"+decimal.toString())
-
+            if(cant.text.toString() != "") {
+                val cantidad = cant.text.toString().toDouble()
+                changeUnity = producto.ratio_conversion
+                //val decimal = BigDecimal(cantidad * producto.precio_contado*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
+                //val decimalL = BigDecimal(cantidad * producto.precio_lista*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
+                total.setText(producto.getPrecioContadoString(changeUnity, cantidad))
+                totalLista.setText(producto.getPrecioListaString(changeUnity, cantidad))
+            }
         }
 
         desc.setText(producto.descripcion)
         cant.setText("1")
-        val decimal = BigDecimal(producto.precio_contado).setScale(2, RoundingMode.HALF_EVEN)
-        total.setText("Total= $"+decimal.toString())
+        //val decimal = BigDecimal(producto.precio_contado).setScale(2, RoundingMode.HALF_EVEN)
+        //val decimalL = BigDecimal(producto.precio_lista).setScale(2, RoundingMode.HALF_EVEN)
+        total.setText(producto.getPrecioContadoString(changeUnity,1.0))
+        totalLista.setText(producto.getPrecioListaString(changeUnity,1.0))
 
 
 
@@ -273,8 +296,11 @@ class HomeFragment : Fragment() {
         scroll.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 cant.setText(i.toString())
-                val decimal = BigDecimal(i*producto.precio_contado*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
-                total.setText("Total= $"+decimal.toString())
+                //val decimal = BigDecimal(i*producto.precio_contado*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
+
+                //val decimalL = BigDecimal(i*producto.precio_lista*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
+                total.setText(producto.getPrecioContadoString(changeUnity,i.toDouble()))
+                totalLista.setText(producto.getPrecioListaString(changeUnity,i.toDouble()))
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) { }
             override fun onStopTrackingTouch(seekBar: SeekBar?) { }
@@ -307,8 +333,10 @@ class HomeFragment : Fragment() {
             override fun afterTextChanged(p0: Editable?) {
                 if(!p0.isNullOrBlank()){
                     val cantidad = ("0"+p0.toString()).toDouble()
-                    val decimal = BigDecimal(cantidad * producto.precio_contado*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
-                    total.setText("Total= $"+decimal.toString())
+                    //val decimal = BigDecimal(cantidad * producto.precio_contado*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
+                    //val decimalL = BigDecimal(cantidad * producto.precio_lista*changeUnity).setScale(2, RoundingMode.HALF_EVEN)
+                    total.setText(producto.getPrecioContadoString(changeUnity,cantidad))
+                    totalLista.setText(producto.getPrecioListaString(changeUnity,cantidad))
                 }
             }
 
